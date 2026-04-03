@@ -5,8 +5,10 @@
 // =============================================================================
 
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using Unity.Mathematics;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class Assignment_DirectionAlert : MonoBehaviour
 {
@@ -32,6 +34,8 @@ public class Assignment_DirectionAlert : MonoBehaviour
     [Tooltip("적 감지 반경")]
     [Range(1f, 30f)]
     [SerializeField] private float alertRange = 15f;
+    private float sideThreshole = 0.3f;  
+
 
     [Header("=== UI 연결 ===")]
     [Tooltip("정보 표시용 TMP_Text (Canvas 하위에 배치)")]
@@ -75,8 +79,23 @@ public class Assignment_DirectionAlert : MonoBehaviour
 
     private Direction GetDirection(Transform enemy)
     {
-        // TODO
-        return Direction.None;
+        Vector3 toenemy=enemy.position-transform.position;
+        toenemy.y = 0;
+
+        if (toenemy == Vector3.zero)
+        { 
+            return Direction.None;
+        }
+
+        Vector3 cross=Vector3.Cross(transform.position, toenemy.normalized);
+        float dot = Vector3.Dot(transform.forward, toenemy.normalized);
+
+        if(Mathf.Abs(cross.y)>sideThreshole)
+        {
+            return cross.y>0? Direction.Right: Direction.Left;
+        }
+        return dot > 0 ? Direction.Front: Direction.Back;
+
     }
 
     private void OnDrawGizmos()

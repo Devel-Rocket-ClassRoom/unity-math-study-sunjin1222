@@ -71,21 +71,20 @@ public class Assignment_EnemyDetector : MonoBehaviour
     private bool IsDetected(Transform enemy)
     {
 
-        Vector3 inSidecircle = enemy.position - transform.position;
-        float inSidecirclemag = inSidecircle.magnitude;
-
-        if (inSidecirclemag > detectionRange)
+        Vector3 toTarget = (enemy.position - transform.position).normalized;
+        if (toTarget.magnitude > detectionFOV)
         {
             return false;
         }
-        inSidecircle.Normalize();
+        Vector3 toTargetNorm = toTarget.normalized;
 
-        float inSideeye = Vector3.Angle(transform.forward, inSidecircle);
-        if (inSideeye > detectionFOV * 0.5f)
-        {
-            return false;
-        }
-        return true;
+        float dotProductValue = Vector3.Dot(transform.forward, toTargetNorm);
+
+        float angleBetween = Mathf.Acos(dotProductValue) * Mathf.Rad2Deg;
+
+        float helfFovCos = Mathf.Cos(detectionRange * 0.5f * Mathf.Deg2Rad);
+
+        return dotProductValue > helfFovCos;
     }
 
     private void OnDrawGizmos()
