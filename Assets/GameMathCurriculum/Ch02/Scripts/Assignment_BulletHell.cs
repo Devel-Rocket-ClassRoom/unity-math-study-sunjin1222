@@ -91,36 +91,46 @@ public class Assignment_BulletHell : MonoBehaviour
 
     private Vector3 CalculateCircleDirection(int index, int total)
     {
-        for (int i = 0; i < 0; i++)
-        {
-            float angleDegrees = (i * angleSpacing + currentRotationOffset) % 360f;
-            float angleRadians = angleDegrees * Mathf.Deg2Rad;
+        float angleSpacing = 360f / total;
 
-            Vector3 direction = new Vector3(
-                Mathf.Cos(angleRadians),
-                0f,
-                Mathf.Sin(angleRadians)
-            ).normalized;
+        float angleDegrees = (index * angleSpacing + currentRotationOffset) % 360f;
+        float angleRadians = angleDegrees * Mathf.Deg2Rad;
 
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-
-            Rigidbody rb = bullet.GetComponent<Rigidbody>();
-            rb.linearVelocity = direction * bulletSpeed;
-            Destroy(bullet);
-        }
-        return Vector3.forward;
+        Vector3 Circle = new Vector3(Mathf.Cos(angleRadians), 0f, Mathf.Sin(angleRadians)).normalized;
+   
+   
+        return Circle;
     }
 
     private Vector3 CalculateSpiralDirection(int index, int total)
     {
         // TODO
-        return Vector3.forward;
-    }
+        float angleSpacing = 360f / total;
+
+        currentRotationOffset = Time.time * spiralTurnSpeed * Mathf.Rad2Deg;
+
+        float angleDegrees = (index * angleSpacing + currentRotationOffset) % 360f;
+        float angleRadians = angleDegrees * Mathf.Deg2Rad;
+
+        Vector3 Spiral = new Vector3(Mathf.Cos(angleRadians), 0f, Mathf.Sin(angleRadians)).normalized;
+        return Spiral;
+
+
+}
 
     private Vector3 CalculateFanDirection(int index, int total)
     {
         // TODO
-        return Vector3.forward;
+
+        float startAngle = -fanAngle * 0.5f;
+        float angleStep = fanAngle / (total - 1);
+
+        float angleDegrees = startAngle + angleStep * index + currentRotationOffset;
+        float angleRadians = angleDegrees * Mathf.Deg2Rad;
+
+        Vector3 Fan =new Vector3(Mathf.Sin(angleRadians), 0f, Mathf.Cos(angleRadians)).normalized;
+
+        return Fan;
     }
     
     private void UpdateDebugUI()
